@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace StudentManagementSystem.Models
 {
-    public class Student
+    public class Instructor
     {
-        public int Id { get; set; } 
-        public string? FullName { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
         public string? Email { get; set; }
-        public int Age { get; set; }
-        public decimal Percentage { get; set; }
+        public string? Specialization { get; set; }
         public List<Course> Courses { get; set; } = new List<Course>();
-
 
     }
 }

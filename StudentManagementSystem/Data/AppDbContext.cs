@@ -12,6 +12,8 @@ namespace StudentManagementSystem.Data
     {
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=.;Database=StudentManagementDB;Trusted_Connection=True;TrustServerCertificate=True");
@@ -38,14 +40,7 @@ namespace StudentManagementSystem.Data
             }
 
             );
-            //data seeding
-            modelBuilder.Entity<Course>().HasData(
-        new Course { Id = 1, Name = "C# Fundamentals", Description = "Learn the basics of C# programming language.", DurationInHours = 20 },
-        new Course { Id = 2, Name = "ASP.NET Core", Description = "Build web applications using ASP.NET Core.", DurationInHours = 30 },
-        new Course { Id = 3, Name = "Entity Framework Core", Description = "Master database access using EF Core.", DurationInHours = 15 },
-        new Course { Id = 4, Name = "SQL Server Basics", Description = "Introduction to relational databases and SQL.", DurationInHours = 18 },
-        new Course { Id = 5, Name = "React JS", Description = "Build modern front-end applications using React.", DurationInHours = 25 }
-    );
+            
             modelBuilder.Entity<Student>().HasData(
         new Student { Id = 1, FullName = "Aya Tamer", Email = "aya.sonbaty@example.com", Age = 21, Percentage = 92.50m },
         new Student { Id = 2, FullName = "Omar Khaled", Email = "omar.khaled@example.com", Age = 22, Percentage = 85.75m },
@@ -59,6 +54,33 @@ namespace StudentManagementSystem.Data
         new Student { Id = 10, FullName = "Ahmed Ragab", Email = "ahmed.ragab@example.com", Age = 25, Percentage = 76.85m }
     );
 
+            modelBuilder.Entity<Course>()
+                .HasOne(c=>c.Instructor)
+                .WithMany(i => i.Courses)
+                .HasForeignKey(c => c.InstructorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.Courses)
+                .WithMany(c => c.Students);
+
+
+
+            // Seeding Instructors
+            modelBuilder.Entity<Instructor>().HasData(
+                new Instructor { Id = 1, Name = "Mohamed Ahmed", Email = "mohamed.ahmed@example.com", Specialization = "Databases" },
+                new Instructor { Id = 2, Name = "Ahmed Hassan", Email = "ahmed.hassan@example.com", Specialization = "Programming Languages" },
+                new Instructor { Id = 3, Name = "Omar Ali", Email = "omar.ali@example.com", Specialization = "Web Development" }
+            );
+
+            // Seeding Courses 
+            modelBuilder.Entity<Course>().HasData(
+                new Course { Id = 1, Name = "C# Fundamentals", Description = "Learn the basics of C# programming language.", DurationInHours = 20, InstructorId = 2 },
+                new Course { Id = 2, Name = "ASP.NET Core", Description = "Build web applications using ASP.NET Core.", DurationInHours = 30, InstructorId = 3 },
+                new Course { Id = 3, Name = "Entity Framework Core", Description = "Master database access using EF Core.", DurationInHours = 15, InstructorId = 1 },
+                new Course { Id = 4, Name = "SQL Server Basics", Description = "Introduction to relational databases and SQL.", DurationInHours = 18, InstructorId = 1 },
+                new Course { Id = 5, Name = "React JS", Description = "Build modern front-end applications using React.", DurationInHours = 25, InstructorId = 3 }
+            );
 
 
 
@@ -68,3 +90,5 @@ namespace StudentManagementSystem.Data
         }
     }
 }
+
+
